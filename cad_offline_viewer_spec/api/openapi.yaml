@@ -1,0 +1,150 @@
+openapi: 3.0.3
+info:
+  title: CAD Viewer Box API
+  version: 1.0.0
+servers:
+  - url: /api/v1
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /version:
+    get:
+      summary: Active slot and release info
+      responses:
+        "200":
+          description: Version info
+  /facets:
+    get:
+      summary: Facets for filters
+      parameters:
+        - in: query
+          name: fields
+          schema: { type: string }
+      responses:
+        "200":
+          description: Facets
+  /suggest:
+    get:
+      summary: Suggest
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 10 }
+      responses:
+        "200":
+          description: Suggestions
+  /search:
+    post:
+      summary: Search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: Results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+  /slices/{slice_id}:
+    get:
+      summary: Slice metadata
+      parameters:
+        - in: path
+          name: slice_id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Slice meta
+  /slices/{slice_id}/pdf:
+    get:
+      summary: Slice PDF (Range supported)
+      parameters:
+        - in: path
+          name: slice_id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: PDF
+        "206":
+          description: Partial content
+  /slices/{slice_id}/thumbs/{name}:
+    get:
+      summary: Thumbnail
+      parameters:
+        - in: path
+          name: slice_id
+          required: true
+          schema: { type: string, format: uuid }
+        - in: path
+          name: name
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Image
+components:
+  schemas:
+    SearchRequest:
+      type: object
+      additionalProperties: false
+      required: [q, limit, offset, filters]
+      properties:
+        q: { type: string, default: "" }
+        limit: { type: integer, minimum: 1, maximum: 100, default: 20 }
+        offset: { type: integer, minimum: 0, default: 0 }
+        sort: { type: string, enum: [relevance, updated_desc, title_asc], default: relevance }
+        filters:
+          type: object
+          additionalProperties: false
+          properties:
+            facility: { type: array, items: { type: string }, default: [] }
+            area: { type: array, items: { type: string }, default: [] }
+            year: { type: array, items: { type: integer }, default: [] }
+            tags: { type: array, items: { type: string }, default: [] }
+            equipment: { type: array, items: { type: string }, default: [] }
+        highlight: { type: boolean, default: true }
+    SearchResponse:
+      type: object
+      additionalProperties: false
+      required: [total, items]
+      properties:
+        total: { type: integer, minimum: 0 }
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [slice_id, title, thumb, hit_pages]
+            properties:
+              slice_id: { type: string, format: uuid }
+              title: { type: string }
+              drawing_no: { type: [string, "null"] }
+              facility: { type: [string, "null"] }
+              area: { type: [string, "null"] }
+              year: { type: [integer, "null"] }
+              revision: { type: [string, "null"] }
+              updated_at: { type: [string, "null"], format: date-time }
+              thumb:
+                type: object
+                additionalProperties: false
+                required: [url]
+                properties:
+                  url: { type: string }
+              hit_pages:
+                type: array
+                items: { type: integer, minimum: 1 }
+              snippet: { type: [string, "null"] }

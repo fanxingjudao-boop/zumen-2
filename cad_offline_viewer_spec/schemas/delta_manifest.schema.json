@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schema/delta_manifest.json",
+  "title": "DeltaManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "from_version",
+    "to_version",
+    "created_at",
+    "generator",
+    "counts",
+    "apply"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "from_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "to_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "cad-repo-maintainer"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "added_slices",
+        "updated_slices",
+        "deleted_slices",
+        "added_containers",
+        "updated_containers",
+        "deleted_containers"
+      ],
+      "properties": {
+        "added_slices": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updated_slices": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deleted_slices": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "added_containers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updated_containers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deleted_containers": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "apply": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "requires_reindex",
+        "slot_strategy"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "copy_files"
+          ]
+        },
+        "requires_reindex": {
+          "type": "boolean"
+        },
+        "slot_strategy": {
+          "type": "string",
+          "enum": [
+            "apply_to_inactive_slot_then_switch"
+          ]
+        }
+      }
+    }
+  }
+}

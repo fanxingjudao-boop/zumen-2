@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schema/slice_meta.json",
+  "title": "SliceMeta",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "slice_id",
+    "container_id",
+    "page_start",
+    "page_end",
+    "title",
+    "date",
+    "classification",
+    "split",
+    "files"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "slice_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "container_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "page_start": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "page_end": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "drawing_no": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "date": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "year",
+        "month"
+      ],
+      "properties": {
+        "year": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "month": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 12
+        },
+        "raw": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "facility",
+        "area",
+        "tags"
+      ],
+      "properties": {
+        "facility": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "area": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "equipment": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": []
+        },
+        "address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default": []
+        }
+      }
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "split": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "confidence"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "toc",
+            "heuristic",
+            "manual"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "rule_set_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pdf",
+        "thumbs"
+      ],
+      "properties": {
+        "pdf": {
+          "type": "string",
+          "const": "slice.pdf"
+        },
+        "thumbs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "imported_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
