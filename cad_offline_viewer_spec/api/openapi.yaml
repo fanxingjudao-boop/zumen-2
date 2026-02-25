@@ -132,12 +132,12 @@ components:
             properties:
               slice_id: { type: string, format: uuid }
               title: { type: string }
-              drawing_no: { type: [string, "null"] }
-              facility: { type: [string, "null"] }
-              area: { type: [string, "null"] }
-              year: { type: [integer, "null"] }
-              revision: { type: [string, "null"] }
-              updated_at: { type: [string, "null"], format: date-time }
+              drawing_no: { type: string, nullable: true }
+              facility: { type: string, nullable: true }
+              area: { type: string, nullable: true }
+              year: { type: integer, nullable: true }
+              revision: { type: string, nullable: true }
+              updated_at: { type: string, nullable: true, format: date-time }
               thumb:
                 type: object
                 additionalProperties: false
@@ -147,4 +147,4 @@ components:
               hit_pages:
                 type: array
                 items: { type: integer, minimum: 1 }
-              snippet: { type: [string, "null"] }
+              snippet: { type: string, nullable: true }
