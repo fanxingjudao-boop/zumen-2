@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PWA UI モック（操作性・視認性改善版）</title>
+  <style>
+    :root {
+      --bg: #eef2ff;
+      --surface: #ffffff;
+      --text: #0b1220;
+      --muted: #475569;
+      --line: #cbd5e1;
+      --primary: #1d4ed8;
+      --primary-soft: #e7efff;
+      --ok: #0f9d58;
+      --shadow: 0 16px 30px rgba(15, 23, 42, 0.15);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+      background: linear-gradient(180deg, #e0e7ff 0%, var(--bg) 120px, var(--bg) 100%);
+      padding: 16px;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; }
+    h1 { margin: 0 0 6px; font-size: 28px; }
+    .lead { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+    .tips {
+      margin: 0 0 16px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f8fbff;
+      border: 1px solid #d9e6ff;
+      color: #234;
+      font-size: 13px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      background: rgba(238,242,255,0.92);
+      backdrop-filter: blur(4px);
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid #d4dcf8;
+    }
+    .tab {
+      border: 1px solid #c9d7ff;
+      background: #fff;
+      color: #1e3a8a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .tab[aria-selected="true"] {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+    .phone {
+      background: #0f172a;
+      border-radius: 30px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      width: min(100%, 320px);
+      margin: 0 auto;
+    }
+    .notch {
+      width: 120px;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 999px;
+      margin: 0 auto 10px;
+    }
+    .screen {
+      background: var(--surface);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #bcd;
+      min-height: 560px;
+    }
+    .top {
+      background: #f4f8ff;
+      border-bottom: 1px solid var(--line);
+      padding: 12px;
+    }
+    .top .title { font-size: 14px; font-weight: 800; }
+    .top .sub { margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .sec { padding: 12px; border-bottom: 1px solid #ebf0f7; }
+    .sec:last-child { border-bottom: 0; }
+    .label { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 700; }
+    .search {
+      border: 2px solid #c6d6ff;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 13px;
+      color: #1e3a8a;
+      background: #fafdff;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      background: var(--primary-soft);
+      color: #153e9f;
+      border: 1px solid #bdd1ff;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .item { display: flex; gap: 10px; margin-bottom: 10px; }
+    .thumb {
+      flex: 0 0 60px;
+      height: 46px;
+      border-radius: 8px;
+      border: 1px solid #c9d6eb;
+      background: linear-gradient(135deg,#e8eef7,#dbe8fb);
+    }
+    .item .name { font-size: 13px; font-weight: 700; }
+    .item .meta { font-size: 12px; color: var(--muted); }
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid #bde7cb;
+      background: #effcf2;
+      color: var(--ok);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .pdf {
+      border: 2px dashed #90b3ff;
+      border-radius: 12px;
+      background: #f4f8ff;
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #1f3f86;
+      font-weight: 700;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 20px rgba(15,23,42,.08);
+    }
+    .panel h2 { margin: 0 0 8px; font-size: 18px; }
+    .panel p { margin: 0 0 12px; color: var(--muted); }
+    .checks { margin: 0; padding-left: 18px; }
+    .checks li { margin-bottom: 6px; font-size: 14px; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>PWA UIモック（操作性・視認性改善版）</h1>
+  <p class="lead">画面を切り替えて、S01〜S05 の導線と情報密度を確認できます（上部タブをクリック）。</p>
+  <div class="tips">改善ポイント: 文字サイズ拡大・コントラスト強化・一貫した操作チップ・切替タブによるレビュー効率化。</div>
+
+  <div class="toolbar" role="tablist" aria-label="画面切替">
+    <button class="tab" role="tab" aria-selected="true" data-view="s01">S01 ホーム</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="s02">S02 検索結果</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="s03">S03 図面詳細</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="s04">S04 ビューワ</button>
+    <button class="tab" role="tab" aria-selected="false" data-view="s05">S05 設定</button>
+  </div>
+
+  <section class="layout">
+    <article class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div id="s01" class="view active">
+          <div class="top"><div class="title">S01 ホーム</div><div class="sub">検索・最近見た・お気に入り</div></div>
+          <div class="sec"><div class="label">図面検索</div><div class="search">図面名・図番・設備名を入力…</div></div>
+          <div class="sec"><div class="label">最近見た</div>
+            <div class="item"><div class="thumb"></div><div><div class="name">A棟 配管系統図 2024</div><div class="meta">2時間前に閲覧</div></div></div>
+            <div class="item"><div class="thumb"></div><div><div class="name">B棟 電源盤レイアウト</div><div class="meta">昨日閲覧</div></div></div>
+          </div>
+          <div class="sec"><span class="status">箱に接続済み・オフライン利用可</span></div>
+        </div>
+
+        <div id="s02" class="view">
+          <div class="top"><div class="title">S02 検索結果</div><div class="sub">フィルタ + 一覧</div></div>
+          <div class="sec"><div class="label">フィルタ（最大3つ）</div><div class="chips"><span class="chip">facility: A棟</span><span class="chip">area: 3F</span><span class="chip">year: 2024</span></div></div>
+          <div class="sec">
+            <div class="item"><div class="thumb"></div><div><div class="name">A棟 3F 空調配管図</div><div class="meta">ヒット: p2, p4</div></div></div>
+            <div class="item"><div class="thumb"></div><div><div class="name">A棟 3F 給排水配管図</div><div class="meta">ヒット: p1</div></div></div>
+            <div class="item"><div class="thumb"></div><div><div class="name">A棟 3F 電源系統図</div><div class="meta">ヒット: p8</div></div></div>
+          </div>
+        </div>
+
+        <div id="s03" class="view">
+          <div class="top"><div class="title">S03 図面詳細</div><div class="sub">メタ情報 + ヒットページ</div></div>
+          <div class="sec"><div class="label">メタ情報</div><div class="item"><div><div class="name">図番: D-23018 / 改訂: Rev.3</div><div class="meta">設備: 空調 / 更新: 2024-09-10</div></div></div></div>
+          <div class="sec"><div class="label">ヒットページ</div><div class="chips"><span class="chip">p2へ移動</span><span class="chip">p4へ移動</span></div></div>
+          <div class="sec"><div class="label">操作</div><div class="chips"><span class="chip">PDFを開く</span><span class="chip">お気に入り追加</span></div></div>
+        </div>
+
+        <div id="s04" class="view">
+          <div class="top"><div class="title">S04 ビューワ</div><div class="sub">ズーム / パン / 回転 / ページ移動</div></div>
+          <div class="sec"><div class="pdf">PDF表示領域<br>（Range取得）</div></div>
+          <div class="sec"><div class="chips"><span class="chip">-</span><span class="chip">100%</span><span class="chip">+</span><span class="chip">回転</span><span class="chip">ページ移動</span></div></div>
+        </div>
+
+        <div id="s05" class="view">
+          <div class="top"><div class="title">S05 設定/情報</div><div class="sub">バージョン・キャッシュ・ヘルプ</div></div>
+          <div class="sec"><div class="label">バージョン</div><div class="name">active_slot: B / release: 2025.Q1</div></div>
+          <div class="sec"><div class="label">キャッシュ</div><div class="meta">検索結果: 24h / サムネ: LRU / PDF: 一時保存のみ</div></div>
+          <div class="sec"><div class="label">ヘルプ</div><div class="meta">現場Wi-Fiに接続して利用してください。</div></div>
+        </div>
+      </div>
+    </article>
+
+    <aside class="panel">
+      <h2>レビュー観点</h2>
+      <p>このモックは、操作性と視認性の確認を主目的としています。</p>
+      <ul class="checks">
+        <li>主要導線（検索 → 結果 → 詳細 → 閲覧）を最小操作で遷移できるか</li>
+        <li>文字コントラスト・サイズが現場利用（屋外/手袋操作想定）に耐えるか</li>
+        <li>状態表示（接続可否、ヒットページ、キャッシュ情報）が即時に読めるか</li>
+        <li>タップ対象（チップ/ボタン）のサイズが十分か</li>
+      </ul>
+    </aside>
+  </section>
+</div>
+
+<script>
+  const tabs = [...document.querySelectorAll('.tab')];
+  const views = [...document.querySelectorAll('.view')];
+
+  function activate(id) {
+    views.forEach(v => v.classList.toggle('active', v.id === id));
+    tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === id)));
+  }
+
+  tabs.forEach(tab => tab.addEventListener('click', () => activate(tab.dataset.view)));
+</script>
+</body>
+</html>
